@@ -1,0 +1,23 @@
+---
+- apt_key: keyserver=hkp://p80.pool.sks-keyservers.net:80 id=58118E89F3A912897C070ADBF76221572C52609D state=present
+- apt_repository: repo='deb https://apt.dockerproject.org/repo ubuntu-xenial main' update_cache=yes
+- apt: pkg={{item}}
+  with_items:
+  - linux-image-extra-{{ ansible_kernel }}
+  - linux-image-extra-virtual
+- apt: pkg={{item}} state=latest install_recommends=no
+  with_items:
+  - docker-engine
+  - python-pip
+- service: name=docker state=started
+- name: Install docker-py as a workaround for Ansible issue
+  pip: name=docker-py
+- file: path=/data/registry state=directory mode=0700 owner=root recurse=yes
+- docker:
+    image: registry
+    name: registry
+    ports:
+      - "5000:5000"
+    volumes:
+      - "/data/registry:/var/lib/registry"
+    state: restarted

@@ -1,0 +1,31 @@
+---
+- apt: update_cache=yes cache_valid_time=3600
+- apt_repository: repo='ppa:{{item}}' update_cache=yes
+  with_items:
+  - git-core
+- apt: pkg={{item}} state=latest install_recommends=no
+  with_items:
+  - python-pycurl
+  - python-psycopg2
+  - git-core
+  - mercurial
+  - tig
+  - tmux
+  - ufw
+  - htop
+  - mc
+  - zsh
+  - curl
+  - apache2-utils
+  - whois
+  - ca-certificates
+  - vim
+- name: generate locale
+  command: /usr/sbin/locale-gen {{locale}}
+- name: set locale to locale
+  command: /usr/sbin/update-locale LANG={{locale}} LC_ALL={{locale}}
+- name: conf dir
+  file: name=/home/felix/conf state=directory
+- name: Set zsh as default shell
+  user: name=felix shell=/bin/bash
+- authorized_key: user=felix key="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC5aIsbNwPdEHTKyJAkr6cP46PE1fPPtiazKx7ZPSjLEEAlk8UyVEJDd2m3NvSm7wDV6QzilEDErZvTEQQcOPhdhvPmzijgrygO2xjKWTgwMcu2kclhh3GBxBWbSj4H3N1K3WmDiohN/0kTZagdl+HGjpumxNbv6RreKDitHbSyFESKWtsZ2ES5pRJra3117MEuljRA0f2S0Sce+66crVmpZcHqoN4pp/gI9Ik8gj9JFJTIZduSYBzhB6seydt6iDWpRF+EPARB7vS8tz23hUBDlembpAQuWzlxT11OTyT2cQdL2Vjl8g2n5/56uz53tcdtONePELNNXSTxUudVZY4eTx0TEuHPBvNE8RvketOyUdhUoK9wt2CWOfqmA6z0cVQlR92OrOu0utQhqL63U47aHYPhvStnPuIJz4qjeqMM9YbebMzsuqkSmYKMM47PJrepqBSSUS+A4qrvgmSsblge3bNMXexSH+RrzEGOCo/+RTi6OrYaemkkTODslaSi85qDMSS0kOI6Cyjt3+or2jsDN8CjaVtw/tnNzfNDJafYj0JiAyr+D3gJpzIqIXYPAPsEV97uHtDp0WP+aCT/dXVivfK2RPf8v9kEFi76WzRT2h8BwDfYK9CFjWgcgGR8oN+BdTyASoSs6OZxmkwHfBBWDhawvZE86PUX6ap9rx2iOw== felix_roeser@mckinsey.com"
